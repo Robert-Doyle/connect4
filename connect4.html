@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	<style>
+	table {
+	  font-family: arial, sans-serif;
+	  border-collapse: collapse;
+	  width: 70%;
+	}
+
+	td, th {
+	  border: 2px solid #111111;
+	  text-align: center;
+	  padding: 20px;
+	}
+
+	tr:nth-child(even) {
+	  background-color: #dddddd;
+	}
+	</style>
+
+
+	<script type="text/javascript">
+
+		const WINNING_LENGTH = 4
+
+		var playerTurn = 0;
+		const RED_ARROW = "redArrow.png";
+		const RED_COUNTER = "redCounter.png";
+		const YELLOW_ARROW = "yellowArrow.png";
+		const YELLOW_COUNTER = "yellowCounter.png";
+
+
+		var board = document.createElement("TABLE");
+		board.setAttribute('id', 'board');
+
+		var currentRow;
+		var currentCell;
+
+		var dropButtons = document.createElement("TABLE");
+		dropButtons.setAttribute('id', 'dropButtons');
+		currentRow = dropButtons.insertRow(0);
+
+		for (i = 0; i < 7; i++) {
+			currentCell = currentRow.insertCell(i);
+			currentCell.appendChild(createDropButton(i));
+		}
+
+
+		/*
+		Sets the board up for a new game
+		*/
+		function newGame() {
+			for (i = 0; i < 6; i++) {
+				currentRow = board.insertRow(i);
+				for (j = 0; j < 7; j++) {
+					currentCell = currentRow.insertCell(j);
+				}
+			}
+			document.body.appendChild(dropButtons);
+			document.body.appendChild(board);
+			document.getElementById("newGamebtn").style.visibility = "hidden";
+			document.getElementById("resetGamebtn").style.visibility = "visible";
+		}
+
+
+		/*
+		Resets the board
+		*/
+		function resetGame() {
+			for (i = 0; i < 6; i++) {
+				for (j = 0; j < 7; j++) {
+					currentCell = board[i][j];
+					currentCell.innerHTML = null;
+				}
+			}
+		}
+
+
+		/*
+		Creates a new drop button
+		*/
+		function createDropButton(index) {
+			var dropButton = document.createElement("BUTTON");
+			dropButton.setAttribute('id', 'drop'+index);
+			dropButton.onclick = selectDropColumn(index);
+
+			var arrowImg = document.createElement("img");
+			arrowImg.src = RED_ARROW;
+			dropButton.appendChild(arrowImg);
+			return dropButton;
+		}
+
+
+		/*
+		Drops a counter into the column of the input index
+		*/
+		function selectDropColumn(columnIndex) {
+			return;
+		}
+
+	</script>
+
+</head>
+
+<body>
+<h1>Connect4</h1>
+
+<button type="button" id="newGamebtn" onclick="newGame()">New Game</button>
+<button type="button" id="resetGamebtn" onclick="resetGame()" style="visibility: hidden">Reset Game</button>
+<p></p>
+
+</body>
+</html> 
