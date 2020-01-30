@@ -2,6 +2,8 @@
 <html>
 <head>
 
+	<meta charset="UTF-8">
+
 	<style>
 	table {
 	  font-family: arial, sans-serif;
@@ -23,13 +25,22 @@
 
 	<script type="text/javascript">
 
-		const WINNING_LENGTH = 4
+		const WINNING_LENGTH = 4;
+		const BOARD_WIDTH = 7;
+		const BOARD_HEIGHT = 6;
 
 		var playerTurn = 0;
 		const RED_ARROW = "redArrow.png";
 		const RED_COUNTER = "redCounter.png";
 		const YELLOW_ARROW = "yellowArrow.png";
 		const YELLOW_COUNTER = "yellowCounter.png";
+
+
+		var redCounter = document.createElement("img");
+		redCounter.src = RED_COUNTER;
+
+		var yellowCounter = document.createElement("img");
+		yellowCounter.src = YELLOW_COUNTER;
 
 
 		var board = document.createElement("TABLE");
@@ -42,7 +53,7 @@
 		dropButtons.setAttribute('id', 'dropButtons');
 		currentRow = dropButtons.insertRow(0);
 
-		for (i = 0; i < 7; i++) {
+		for (i = 0; i < BOARD_WIDTH; i++) {
 			currentCell = currentRow.insertCell(i);
 			currentCell.appendChild(createDropButton(i));
 		}
@@ -52,16 +63,19 @@
 		Sets the board up for a new game
 		*/
 		function newGame() {
-			for (i = 0; i < 6; i++) {
+			for (i = 0; i < BOARD_HEIGHT; i++) {
 				currentRow = board.insertRow(i);
-				for (j = 0; j < 7; j++) {
+				for (j = 0; j < BOARD_WIDTH; j++) {
 					currentCell = currentRow.insertCell(j);
+					currentCell.value = null;
 				}
 			}
 			document.body.appendChild(dropButtons);
 			document.body.appendChild(board);
 			document.getElementById("newGamebtn").style.visibility = "hidden";
 			document.getElementById("resetGamebtn").style.visibility = "visible";
+			document.getElementById("playerTurn").innerHTML = "Red's Turn";
+			document.getElementById("playerTurn").style.visibility = "visible";
 		}
 
 
@@ -69,12 +83,15 @@
 		Resets the board
 		*/
 		function resetGame() {
-			for (i = 0; i < 6; i++) {
-				for (j = 0; j < 7; j++) {
-					currentCell = board[i][j];
-					currentCell.innerHTML = null;
+			for (i = 0; i < BOARD_HEIGHT; i++) {
+				for (j = 0; j < BOARD_WIDTH; j++) {
+					currentCell = board.rows[i].cells[j];
+					currentCell.value = null;
+					currentCell.innerHTML = "";
 				}
 			}
+			playerTurn = 0;
+			document.getElementById("playerTurn").innerHTML = "Red's Turn";
 		}
 
 
@@ -84,8 +101,9 @@
 		function createDropButton(index) {
 			var dropButton = document.createElement("BUTTON");
 			dropButton.setAttribute('id', 'drop'+index);
-			dropButton.onclick = selectDropColumn(index);
-
+			dropButton.onclick = function() {
+				selectDropColumn(index);
+			}
 			var arrowImg = document.createElement("img");
 			arrowImg.src = RED_ARROW;
 			dropButton.appendChild(arrowImg);
@@ -97,8 +115,35 @@
 		Drops a counter into the column of the input index
 		*/
 		function selectDropColumn(columnIndex) {
-			return;
+			var counterImg = document.createElement("img");
+			if (playerTurn == 0) {
+				counterImg.src = RED_COUNTER;
+			} else {
+				counterImg.src = YELLOW_COUNTER;
+			}
+
+			if (board.rows[0].cells[columnIndex].value == null) {
+				for (i=BOARD_HEIGHT; i > 0; i--) {
+					if (board.rows[i-1].cells[columnIndex].value == null) {
+						board.rows[i-1].cells[columnIndex].value = playerTurn;
+						board.rows[i-1].cells[columnIndex].appendChild(counterImg);
+						if (playerTurn == 0) {
+							document.getElementById("playerTurn").innerHTML = "Yellow's Turn";
+							playerTurn = 1;
+						} else {
+							document.getElementById("playerTurn").innerHTML = "Red's Turn";
+							playerTurn = 0;
+						}
+						break;
+					}
+				}
+				return;
+			}
+			else {
+				return;
+			}
 		}
+
 
 	</script>
 
@@ -109,7 +154,7 @@
 
 <button type="button" id="newGamebtn" onclick="newGame()">New Game</button>
 <button type="button" id="resetGamebtn" onclick="resetGame()" style="visibility: hidden">Reset Game</button>
-<p></p>
+<p id="playerTurn" style="visibility: : hidden"></p>
 
 </body>
 </html> 
