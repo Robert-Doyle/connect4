@@ -15,7 +15,13 @@
 	  border: 2px solid #111111;
 	  text-align: center;
 	  padding: 20px;
+	  overflow: hidden;
 	}
+
+	table.fixed { table-layout:fixed; }
+	table.fixed td { overflow: hidden; }
+
+
 
 	tr:nth-child(even) {
 	  background-color: #dddddd;
@@ -55,6 +61,7 @@
 
 		for (i = 0; i < BOARD_WIDTH; i++) {
 			currentCell = currentRow.insertCell(i);
+			currentCell.width = 50;
 			currentCell.appendChild(createDropButton(i));
 		}
 
@@ -127,6 +134,9 @@
 					if (board.rows[i-1].cells[columnIndex].value == null) {
 						board.rows[i-1].cells[columnIndex].value = playerTurn;
 						board.rows[i-1].cells[columnIndex].appendChild(counterImg);
+						if (checkVictory(i-1, columnIndex)) {
+							return;
+						}
 						if (playerTurn == 0) {
 							document.getElementById("playerTurn").innerHTML = "Yellow's Turn";
 							playerTurn = 1;
@@ -141,6 +151,160 @@
 			}
 			else {
 				return;
+			}
+		}
+
+
+		/*
+		Ends the game and displays the winner
+		*/
+		function gameOver() {
+			alert("Game Over: Player " + playerTurn + " Wins!");
+			resetGame();
+		}
+
+
+		/*
+		Checks if a player has won, and ends it if that is the case.
+		*/
+		function checkVictory(rowIndex, columnIndex) {
+			if (checkHorizontal(rowIndex, columnIndex)) {
+				return true;
+			}
+			if (checkVertical(rowIndex, columnIndex)) {
+				return true;
+			}
+			if (checkBLTRDiagonal(rowIndex, columnIndex)) {
+				return true;
+			}
+			if (checkTLBRDiagonal(rowIndex, columnIndex)) {
+				return true;
+			}
+		}
+
+
+		function checkHorizontal(rowIndex, columnIndex) {
+			var successiveCounters = 1;
+			for (i = columnIndex + 1; i < BOARD_WIDTH; i++) {
+				if (board.rows[rowIndex].cells[i].value == playerTurn) {
+					successiveCounters++;
+				} else {
+					break;
+				}
+			}
+
+			for (i = columnIndex - 1; i >= 0; i--) {
+				if (board.rows[rowIndex].cells[i].value == playerTurn) {
+					successiveCounters++;
+				} else {
+					break;
+				}
+			}
+
+			if (successiveCounters >= WINNING_LENGTH) {
+				gameOver();
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+
+		function checkVertical(rowIndex, columnIndex) {
+			var successiveCounters = 1;
+			for (i = rowIndex + 1; i < BOARD_HEIGHT; i++) {
+				if (board.rows[i].cells[columnIndex].value == playerTurn) {
+					successiveCounters++;
+				} else {
+					break;
+				}
+			}
+
+			for (i = rowIndex - 1; i >= 0; i--) {
+				if (board.rows[i].cells[columnIndex].value == playerTurn) {
+					successiveCounters++;
+				} else {
+					break;
+				}
+			}
+
+			if (successiveCounters >= WINNING_LENGTH) {
+				gameOver();
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+
+		function checkTLBRDiagonal(rowIndex, columnIndex) {
+			var successiveCounters = 1;
+			for (i = columnIndex + 1; i < BOARD_WIDTH; i++) {
+
+				if (rowIndex + (i - columnIndex) < BOARD_HEIGHT) {
+					if (board.rows[rowIndex + (i - columnIndex)].cells[i].value == playerTurn) {
+						successiveCounters++;
+					} else {
+						break;
+					}
+				} else {
+					break;
+				}
+			}
+
+			for (i = columnIndex - 1; i >= 0; i--) {
+				if (rowIndex - (i - columnIndex) >= 0) {
+					if (board.rows[rowIndex + (i - columnIndex)].cells[i].value == playerTurn) {
+						successiveCounters++;
+					} else {
+						break;
+					}
+				} else {
+					break;
+				}
+			}
+
+			if (successiveCounters >= WINNING_LENGTH) {
+				gameOver();
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+
+		function checkBLTRDiagonal(rowIndex, columnIndex) {
+			var successiveCounters = 1;
+			for (i = columnIndex + 1; i < BOARD_WIDTH; i++) {
+
+				if (rowIndex - (i - columnIndex) >= 0) {
+					if (board.rows[rowIndex - (i - columnIndex)].cells[i].value == playerTurn) {
+						successiveCounters++;
+					} else {
+						break;
+					}
+				} else {
+					break;
+				}
+			}
+
+			for (i = columnIndex - 1; i >= 0; i--) {
+				if (rowIndex + (columnIndex - i) < BOARD_HEIGHT) {
+					if (board.rows[rowIndex + (columnIndex - i)].cells[i].value == playerTurn) {
+						successiveCounters++;
+					} else {
+						break;
+					}
+				} else {
+					break;
+				}
+			}
+
+			if (successiveCounters >= WINNING_LENGTH) {
+				gameOver();
+				return true;
+			} else {
+				return false;
 			}
 		}
 
