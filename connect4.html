@@ -74,6 +74,8 @@
 				currentRow = board.insertRow(i);
 				for (j = 0; j < BOARD_WIDTH; j++) {
 					currentCell = currentRow.insertCell(j);
+					currentCell.width = 50;
+					currentCell.height = 55;
 					currentCell.value = null;
 				}
 			}
