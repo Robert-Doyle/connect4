@@ -1,4 +1,8 @@
 <!DOCTYPE html>
+
+<!-- Connect4 Implementation in html/javascript
+     Author: Robert Doyle 2020 -->
+     
 <html>
 <head>
 
@@ -28,7 +32,8 @@
 	}
 	</style>
 
-
+	<script src="aiController.js"></script>
+	<script src="victoryCheck.js"></script>
 	<script type="text/javascript">
 
 		const WINNING_LENGTH = 4;
@@ -137,6 +142,7 @@
 						board.rows[i-1].cells[columnIndex].value = playerTurn;
 						board.rows[i-1].cells[columnIndex].appendChild(counterImg);
 						if (checkVictory(i-1, columnIndex)) {
+							gameOver();
 							return;
 						}
 						if (playerTurn == 0) {
@@ -164,152 +170,6 @@
 			alert("Game Over: Player " + playerTurn + " Wins!");
 			resetGame();
 		}
-
-
-		/*
-		Checks if a player has won, and ends it if that is the case.
-		*/
-		function checkVictory(rowIndex, columnIndex) {
-			if (checkHorizontal(rowIndex, columnIndex)) {
-				return true;
-			}
-			if (checkVertical(rowIndex, columnIndex)) {
-				return true;
-			}
-			if (checkBLTRDiagonal(rowIndex, columnIndex)) {
-				return true;
-			}
-			if (checkTLBRDiagonal(rowIndex, columnIndex)) {
-				return true;
-			}
-		}
-
-
-		function checkHorizontal(rowIndex, columnIndex) {
-			var successiveCounters = 1;
-			for (i = columnIndex + 1; i < BOARD_WIDTH; i++) {
-				if (board.rows[rowIndex].cells[i].value == playerTurn) {
-					successiveCounters++;
-				} else {
-					break;
-				}
-			}
-
-			for (i = columnIndex - 1; i >= 0; i--) {
-				if (board.rows[rowIndex].cells[i].value == playerTurn) {
-					successiveCounters++;
-				} else {
-					break;
-				}
-			}
-
-			if (successiveCounters >= WINNING_LENGTH) {
-				gameOver();
-				return true;
-			} else {
-				return false;
-			}
-		}
-
-
-		function checkVertical(rowIndex, columnIndex) {
-			var successiveCounters = 1;
-			for (i = rowIndex + 1; i < BOARD_HEIGHT; i++) {
-				if (board.rows[i].cells[columnIndex].value == playerTurn) {
-					successiveCounters++;
-				} else {
-					break;
-				}
-			}
-
-			for (i = rowIndex - 1; i >= 0; i--) {
-				if (board.rows[i].cells[columnIndex].value == playerTurn) {
-					successiveCounters++;
-				} else {
-					break;
-				}
-			}
-
-			if (successiveCounters >= WINNING_LENGTH) {
-				gameOver();
-				return true;
-			} else {
-				return false;
-			}
-		}
-
-
-		function checkTLBRDiagonal(rowIndex, columnIndex) {
-			var successiveCounters = 1;
-			for (i = columnIndex + 1; i < BOARD_WIDTH; i++) {
-
-				if (rowIndex + (i - columnIndex) < BOARD_HEIGHT) {
-					if (board.rows[rowIndex + (i - columnIndex)].cells[i].value == playerTurn) {
-						successiveCounters++;
-					} else {
-						break;
-					}
-				} else {
-					break;
-				}
-			}
-
-			for (i = columnIndex - 1; i >= 0; i--) {
-				if (rowIndex - (i - columnIndex) >= 0) {
-					if (board.rows[rowIndex + (i - columnIndex)].cells[i].value == playerTurn) {
-						successiveCounters++;
-					} else {
-						break;
-					}
-				} else {
-					break;
-				}
-			}
-
-			if (successiveCounters >= WINNING_LENGTH) {
-				gameOver();
-				return true;
-			} else {
-				return false;
-			}
-		}
-
-
-		function checkBLTRDiagonal(rowIndex, columnIndex) {
-			var successiveCounters = 1;
-			for (i = columnIndex + 1; i < BOARD_WIDTH; i++) {
-
-				if (rowIndex - (i - columnIndex) >= 0) {
-					if (board.rows[rowIndex - (i - columnIndex)].cells[i].value == playerTurn) {
-						successiveCounters++;
-					} else {
-						break;
-					}
-				} else {
-					break;
-				}
-			}
-
-			for (i = columnIndex - 1; i >= 0; i--) {
-				if (rowIndex + (columnIndex - i) < BOARD_HEIGHT) {
-					if (board.rows[rowIndex + (columnIndex - i)].cells[i].value == playerTurn) {
-						successiveCounters++;
-					} else {
-						break;
-					}
-				} else {
-					break;
-				}
-			}
-
-			if (successiveCounters >= WINNING_LENGTH) {
-				gameOver();
-				return true;
-			} else {
-				return false;
-			}
-		}
-
 
 	</script>
 
